@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NextWatchVidio</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+background:#05030b;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+overflow-x:hidden;
+color:#fff;
+}
+
+html{background:#05030b}
+
+body{
+min-height:100vh;
+background:
+radial-gradient(circle at 50% 12%,rgba(168,0,255,.20),transparent 30%),
+radial-gradient(circle at 15% 50%,rgba(255,0,179,.13),transparent 28%),
+radial-gradient(circle at 85% 70%,rgba(35,0,255,.16),transparent 32%),
+linear-gradient(180deg,#07020c 0%,#03030a 48%,#02040b 100%);
+background-attachment:fixed;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:-1;
+background:
+linear-gradient(90deg,transparent 0%,rgba(255,0,200,.035) 48%,transparent 100%),
+repeating-linear-gradient(90deg,transparent 0,transparent 70px,rgba(100,50,255,.018) 71px,transparent 72px);
+}
+
+body::after{
+content:"";
+position:fixed;
+left:50%;
+bottom:-180px;
+width:720px;
+height:360px;
+transform:translateX(-50%);
+background:radial-gradient(ellipse,rgba(183,0,255,.18),transparent 68%);
+filter:blur(18px);
+pointer-events:none;
+z-index:-1;
+}
+
+.page{
+width:100%;
+max-width:480px;
+margin:auto;
+min-height:100vh;
+padding:10px 0 48px;
+}
+
+.header{
+padding:20px 18px 12px;
+text-align:center;
+}
+
+.logo{
+font-size:32px;
+line-height:1;
+font-weight:950;
+letter-spacing:1px;
+text-transform:uppercase;
+color:#fff;
+text-shadow:
+0 0 8px rgba(255,255,255,.8),
+0 0 22px rgba(193,0,255,.75),
+0 0 42px rgba(255,0,200,.35);
+}
+
+.logo::before{
+content:"♛";
+display:block;
+font-size:30px;
+line-height:1;
+margin-bottom:7px;
+color:#fff;
+text-shadow:
+0 0 10px #fff,
+0 0 24px #9d00ff,
+0 0 38px #ff00c8;
+}
+
+.logo span{
+display:block;
+margin-top:4px;
+color:#f000d0;
+text-shadow:
+0 0 8px rgba(255,0,215,.85),
+0 0 25px rgba(175,0,255,.65);
+}
+
+.sub{
+margin:13px auto 0;
+color:#f0e9ff;
+font-size:12px;
+font-weight:800;
+letter-spacing:3px;
+text-transform:uppercase;
+text-shadow:0 0 12px rgba(255,255,255,.2);
+}
+
+/* VIDEO CARD */
+.video-card{
+margin:14px 12px 0;
+background:linear-gradient(145deg,rgba(18,4,30,.88),rgba(4,7,19,.94));
+border:1px solid rgba(225,0,255,.28);
+border-radius:22px;
+overflow:hidden;
+box-shadow:
+0 0 0 1px rgba(255,0,200,.04),
+0 18px 55px rgba(0,0,0,.62),
+0 0 35px rgba(190,0,255,.10);
+}
+
+/* NATIVE BANNER DI ATAS VIDEO */
+.top-native-ad{
+position:relative;
+display:block;
+width:calc(100% - 24px);
+min-height:90px;
+margin:10px 12px;
+padding:10px;
+border:1px solid rgba(225,0,255,.20);
+border-radius:10px;
+background:rgba(0,0,0,.88);
+text-align:center;
+overflow:visible;
+}
+
+.top-native-ad .ads-label{
+display:block;
+position:static;
+margin:0 0 8px;
+color:#a99bb5;
+font-size:9px;
+letter-spacing:1.5px;
+text-align:right;
+pointer-events:none;
+}
+
+.top-native-ad #native-ad-top{
+display:block;
+width:100%;
+min-height:60px;
+}
+
+.top-native-ad iframe,
+.top-native-ad img{
+max-width:100%;
+}
+
+/* VIDEO */
+.video-box{
+position:relative;
+background:#000;
+min-height:250px;
+border-bottom:1px solid rgba(255,0,211,.16);
+}
+
+video{
+width:100%;
+max-height:75vh;
+display:block;
+object-fit:contain;
+background:#000;
+}
+
+.video-box::after{
+content:"";
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:120px;
+background:linear-gradient(to top,#000000dd,transparent);
+pointer-events:none;
+}
+
+#videoLoader{
+position:absolute;
+inset:0;
+background:radial-gradient(circle,rgba(35,0,45,.92),#000 72%);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:13px;
+font-weight:800;
+letter-spacing:2px;
+text-transform:uppercase;
+z-index:10;
+text-shadow:0 0 10px #ff00d4;
+}
+
+.badge{
+position:absolute;
+top:12px;
+left:12px;
+background:linear-gradient(135deg,#ff00c8,#7a00ff);
+padding:8px 12px;
+border-radius:50px;
+font-size:11px;
+font-weight:900;
+z-index:5;
+box-shadow:0 0 18px rgba(255,0,204,.45);
+}
+
+/* VIDEO INFO */
+.video-info{
+padding:18px 16px 16px;
+}
+
+.video-title{
+font-size:21px;
+font-weight:900;
+line-height:1.25;
+text-transform:uppercase;
+letter-spacing:.4px;
+text-shadow:0 0 12px rgba(255,0,210,.32);
+}
+
+.video-desc{
+margin-top:10px;
+color:#dcd5e8;
+font-size:13px;
+line-height:1.65;
+}
+
+.stats{
+display:flex;
+gap:8px;
+margin-top:15px;
+color:#fff;
+font-size:11px;
+font-weight:800;
+flex-wrap:wrap;
+}
+
+.stats div{
+padding:7px 9px;
+border:1px solid rgba(255,0,215,.18);
+background:rgba(255,0,200,.055);
+border-radius:10px;
+}
+
+/* BUTTON */
+.actions{
+display:flex;
+gap:10px;
+margin-top:18px;
+}
+
+.btn{
+flex:1;
+border:none;
+border-radius:14px;
+padding:15px;
+font-size:15px;
+font-weight:800;
+cursor:pointer;
+transition:.25s;
+}
+
+.btn-primary{
+background:linear-gradient(135deg,#ff00c8,#8c00ff);
+color:#fff;
+box-shadow:
+0 10px 28px rgba(215,0,230,.28),
+0 0 18px rgba(255,0,200,.18);
+}
+
+.btn-primary:hover{
+transform:translateY(-2px);
+box-shadow:0 14px 32px rgba(215,0,230,.38);
+}
+
+.btn-secondary{
+background:#11101a;
+color:#fff;
+border:1px solid rgba(255,0,215,.16);
+}
+
+/* SMARTLINK */
+.smartlink-wrap{
+margin:12px 12px 0;
+}
+
+.smartlink-btn{
+display:block;
+width:100%;
+padding:15px 18px;
+border-radius:14px;
+background:linear-gradient(135deg,#ff00c8,#8c00ff);
+color:#fff;
+text-align:center;
+text-decoration:none;
+font-size:15px;
+font-weight:900;
+letter-spacing:.3px;
+box-shadow:
+0 10px 28px rgba(215,0,230,.28),
+0 0 18px rgba(255,0,200,.18);
+transition:.25s;
+}
+
+.smartlink-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 14px 32px rgba(215,0,230,.38);
+}
+
+/* TRENDING */
+.section-title{
+padding:20px 16px 10px;
+font-size:15px;
+font-weight:900;
+letter-spacing:2px;
+text-transform:uppercase;
+color:#fff;
+text-shadow:0 0 12px rgba(255,0,220,.5);
+}
+
+.section-title::after{
+content:"";
+display:block;
+width:72px;
+height:2px;
+margin-top:8px;
+background:linear-gradient(90deg,#ff00c8,#7200ff,transparent);
+box-shadow:0 0 10px rgba(255,0,220,.6);
+}
+
+/* NATIVE BANNER LAMA - TETAP DIPERTAHANKAN */
+.video-native-ad{
+position:relative;
+display:block;
+width:calc(100% - 24px);
+min-height:90px;
+margin:10px 12px 0;
+padding:10px;
+border:1px solid rgba(225,0,255,.20);
+border-radius:10px;
+background:rgba(0,0,0,.88);
+text-align:center;
+overflow:visible;
+}
+
+.video-native-ad .ads-label{
+display:block;
+position:static;
+margin:0 0 8px;
+color:#a99bb5;
+font-size:9px;
+letter-spacing:1.5px;
+text-align:right;
+pointer-events:none;
+}
+
+.video-native-ad #native-ad-script-slot{
+display:block;
+width:100%;
+min-height:60px;
+}
+
+.video-native-ad iframe,
+.video-native-ad img{
+max-width:100%;
+}
+
+/* ADS CARD */
+.ads-card{
+margin:12px;
+background:rgba(8,5,16,.78);
+border-radius:18px;
+padding:14px;
+border:1px solid rgba(255,0,215,.15);
+backdrop-filter:blur(15px);
+box-shadow:0 15px 40px rgba(0,0,0,.35);
+overflow:hidden;
+}
+
+.ads-label{
+color:#756b80;
+font-size:10px;
+text-transform:uppercase;
+margin-bottom:12px;
+letter-spacing:2px;
+}
+
+.footer{
+text-align:center;
+color:#716879;
+font-size:11px;
+padding:28px 15px;
+letter-spacing:.5px;
+}
+
+@media(max-width:480px){
+.logo{
+font-size:30px;
+}
+
+.video-title{
+font-size:19px;
+}
+
+.sub{
+letter-spacing:2px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="header">
+<div class="logo">
+NextWatch <span>Vidio😈</span>
+</div>
+
+<div class="sub">
+Late Night Memes • Good Vibes • After Dark • 18+
+</div>
+</div>
+
+
+<!-- VIDEO CARD -->
+<div class="video-card">
+
+<!-- =====================================================
+     NATIVE BANNER BARU DI ATAS VIDEO
+     SCRIPT BARU - TIDAK MENGGANGGU BANNER LAMA
+     ===================================================== -->
+<div class="top-native-ad">
+
+<div class="ads-label">
+ADVERTISEMENT
+</div>
+
+<div id="native-ad-top">
+
+<script data-cfasync="false"
+async
+type="text/javascript"
+src="">
+</script>
+
+</div>
+</div>
+
+
+<!-- VIDEO -->
+<div class="video-box">
+
+<div id="videoLoader">
+Loading the midnight vibe...
+</div>
+
+<video
+autoplay="autoplay"
+controls="controls"
+controlsList="nodownload noremoteplayback"
+disablePictureInPicture="disablePictureInPicture"
+id="player"
+muted="muted"
+playsinline="playsinline"
+webkit-playsinline="webkit-playsinline"
+poster="https://via.placeholder.com/480x720/05030b/ff00d4?text=Midnight+Menaces"
+preload="metadata">
+
+<source
+id="videoSource"
+src=""
+type="video/mp4">
+
+</video>
+
+</div>
+
+
+<!-- VIDEO INFO -->
+<div class="video-info">
+
+<div class="video-title">
+Late Night Memes 😈
+</div>
+
+<div class="video-desc">
+Welcome to NextWatchVidio — late-night memes, chaotic moments,
+good vibes, and after-dark energy. New clips and fresh vibes every day.
+</div>
+
+<div class="stats">
+<div>🔥 Funny Memes</div>
+<div>☷ Good Vibes</div>
+<div>🌙 After Dark</div>
+<div>18+</div>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FULL VIDS BUTTON -->
+<div class="smartlink-wrap">
+
+<a
+class="smartlink-btn"
+href=""
+rel="nofollow noopener noreferrer"
+target="_blank">
+
+🔥 WATCH FULL VIDS
+
+</a>
+
+</div>
+
+
+<!-- TRENDING -->
+<div class="section-title">
+🔥 Trending Vidio
+</div>
+
+<br>
+
+
+<!-- =====================================================
+     NATIVE BANNER LAMA
+     TETAP ADA / TIDAK DIUBAH
+     ===================================================== -->
+
+<div class="video-native-ad">
+
+<div class="ads-label">
+ADVERTISEMENT
+</div>
+
+<div id="native-ad-script-slot">
+
+<script
+data-cfasync="false"
+async
+type="text/javascript"
+src="">
+</script>
+
+</div>
+
+</div>
+
+<br>
+
+
+<!-- FOOTER -->
+<div class="footer">
+©️ 2026 NextWatchVidio • All Rights Reserved
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     VIDEO SCRIPT
+     ===================================================== -->
+
+<script type="text/javascript">
+
+(function () {
+
+/* =========================
+   VIDEO PARAM
+   ========================= */
+
+const params = new URLSearchParams(window.location.search);
+
+let video = params.get("v");
+
+if (!video) {
+video = "E2hjJb7951";
+}
+
+if (!video.startsWith("http")) {
+video = "https://cdn.videy.co/" + video;
+}
+
+if (!video.endsWith(".mp4")) {
+video += ".mp4";
+}
+
+
+/* =========================
+   VIDEO ELEMENT
+   ========================= */
+
+const player = document.getElementById("player");
+const source = document.getElementById("videoSource");
+const loader = document.getElementById("videoLoader");
+
+
+/* =========================
+   AUTOPLAY
+   ========================= */
+
+player.autoplay = true;
+player.muted = true;
+player.playsInline = true;
+
+
+/* =========================
+   LOAD VIDEO
+   ========================= */
+
+source.src = video;
+
+player.load();
+
+
+/* =========================
+   START VIDEO
+   ========================= */
+
+function startVideo() {
+
+player.play().then(function () {
+
+loader.style.display = "none";
+
+}).catch(function () {
+
+/*
+Jika autoplay diblokir browser,
+kontrol video tetap tersedia.
+*/
+
+loader.style.display = "none";
+
+});
+
+}
+
+
+/* =========================
+   VIDEO EVENTS
+   ========================= */
+
+player.addEventListener(
+"canplay",
+startVideo,
+{ once: true }
+);
+
+player.addEventListener(
+"playing",
+function () {
+
+loader.style.display = "none";
+
+},
+{ once: true }
+);
+
+
+player.addEventListener(
+"error",
+function () {
+
+loader.textContent =
+"Video could not be loaded. Check the video URL.";
+
+loader.style.display = "flex";
+
+}
+);
+
+
+/* =========================
+   FALLBACK AUTOPLAY
+   ========================= */
+
+setTimeout(
+startVideo,
+1000
+);
+
+
+/* =========================
+   DISABLE RIGHT CLICK
+   ========================= */
+
+player.addEventListener(
+"contextmenu",
+function (e) {
+e.preventDefault();
+}
+);
+
+})();
+
+</script>
+
+
+<!-- =====================================================
+     HISTATS
+     ===================================================== -->
+
+<!-- Histats.com (div with counter) -->
+
+<div id="histats_counter"></div>
+
+
+<!-- Histats.com START (aync) -->
+
+<script type="text/javascript">
+
+var _Hasync = _Hasync || [];
+
+_Hasync.push([
+'Histats.start',
+'1,5052379,4,9,110,60,00011111'
+]);
+
+_Hasync.push([
+'Histats.fasi',
+'1'
+]);
+
+_Hasync.push([
+'Histats.track_hits',
+''
+]);
+
+
+(function() {
+
+var hs = document.createElement('script');
+
+hs.type = 'text/javascript';
+
+hs.async = true;
+
+hs.src = '//s10.histats.com/js15_as.js';
+
+(
+document.getElementsByTagName('head')[0] ||
+document.getElementsByTagName('body')[0]
+).appendChild(hs);
+
+})();
+
+</script>
+
+
+<noscript>
+
+<a href="/" target="_blank">
+
+<img
+src="//sstatic1.histats.com/0.gif?5044704&101"
+alt=""
+border="0"
+/>
+
+</a>
+
+</noscript>
+
+<!-- Histats.com END -->
+
+</body>
+</html>
